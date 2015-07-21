@@ -1126,9 +1126,13 @@ prepare1: prepare2 include/linux/version.h include/generated/utsrelease.h \
 	$(cmd_crmodverdir)
 
 archprepare: archheaders archscripts prepare1 scripts_basic
-
+ifeq ($(strip $(USE_KERNEL_OPTIMIZATIONS)),true)
+prepare0: archprepare FORCE
+	$(Q)$(MAKE) $(build)=. missing-syscalls
+else
 prepare0: archprepare FORCE
 	$(Q)$(MAKE) $(build)=.
+endif
 
 # All the preparing..
 prepare: prepare0
